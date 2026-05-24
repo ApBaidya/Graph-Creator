@@ -15,7 +15,9 @@ using namespace std;
 //funcs
 void addV(vector<vector<int>> &, vector<string> &, string & l);
 void addE(vector<vector<int>> &, vector<string>, string start, string end, int weight);
-void rmV();
+void rmV(vector<vector<int>> &, vector<string> &, string & l);
+void rmVLabel(vector<string> & labels, int index);
+void rmVTable(vector<vector<int>> & adjT, int index);
 void rmE();
 void findPath();
 void printTable(vector<vector<int>>);//print out that adjacency table
@@ -67,6 +69,12 @@ int main(){
       cout<<"done"<<endl;
     }
     else if(strcmp(input, "rv")==0){//RMV
+      cout<<"label:"<<endl;
+      cin>>label1;
+      cin.ignore(10, '\n');
+      cin.clear();
+      rmV(adjTable, labels, label1);
+
       cout<<"done"<<endl;
     }
     else if(strcmp(input, "f")==0){//FP
@@ -136,6 +144,45 @@ void printTable(vector<vector<int>> adjTable){//iterate through the 2D vector. o
       cout << (*it1) << " ";
     }
     cout<<endl;
+  }
+  return;
+}
+
+void rmVLabel(vector<string> & labels, int index){
+  int count = 0;
+  for(vector<string>::iterator it = labels.begin(); it != labels.end(); ++it){
+    if(count == index){
+      labels.erase(it);
+      return;
+    }
+    ++ count;
+  }
+}
+
+void rmVTable(vector<vector<int>> & adjT, int index){
+  for(vector<vector<int>>::iterator it = adjT.begin(); it != adjT.end(); ++it){
+    (*it).erase((*it).begin() + index);//remove the value at the rmindex for all vectors
+  }
+}
+
+void rmV(vector<vector<int>> & adjT, vector<string> & labels, string & l){
+  int exists = 0; //1 if there
+  int rmIndex;
+  int count = 0;
+  for(vector<string>::iterator it = labels.begin(); it != labels.end(); ++it){
+    if((*it) == l){
+      rmIndex = count;
+      exists = 1;
+    }
+    ++ count;
+  }
+  if(exists == 1){
+    rmVLabel(labels, rmIndex);//rm from label list
+    rmVTable(adjT, rmIndex);//rm the index from all the vectors
+    //clear specific vertex vector
+    (*(adjT.begin()+rmIndex)).clear();
+    //erase the empty vertec object
+    adjT.erase(adjT.begin()+rmIndex);
   }
   return;
 }
