@@ -1,4 +1,4 @@
-/*Aparajita Baidya 5.23.2026
+/*Aparajita Baidya 5.24.2026
   graph creator - adjacency table - breadth first search
   - directed and weighted edges
   array of labels --> indexes are important
@@ -17,8 +17,7 @@ void addV(vector<vector<int>> &, vector<string> &, string & l);
 void addE(vector<vector<int>> &, vector<string>, string start, string end, int weight);
 void rmV(vector<vector<int>> &, vector<string> &, string & l);
 void rmVLabel(vector<string> & labels, int index);
-void rmVTable(vector<vector<int>> & adjT, int index);
-void rmE();
+void rmE(vector<vector<int>>&, vector<string>, string start, string end);
 void findPath();
 void printTable(vector<vector<int>>);//print out that adjacency table
 
@@ -66,6 +65,15 @@ int main(){
       cout<<"done"<<endl;
     }
     else if(strcmp(input, "re")==0){//RME
+      cout<<"start:"<<endl;
+      cin>>label1;
+      cin.ignore(10, '\n');
+      cin.clear();
+      cout<<"end:"<<endl;
+      cin>>label2;
+      cin.ignore(10, '\n');
+      cin.clear();
+      rmE(adjTable, labels, label1, label2);
       cout<<"done"<<endl;
     }
     else if(strcmp(input, "rv")==0){//RMV
@@ -85,6 +93,7 @@ int main(){
       cout<<"done"<<endl;
     }
     else if(strcmp(input, "q")==0){//QUIT
+      running = 0;
       cout<<"done"<<endl;
     }
   }//end of main while
@@ -159,12 +168,6 @@ void rmVLabel(vector<string> & labels, int index){
   }
 }
 
-void rmVTable(vector<vector<int>> & adjT, int index){
-  for(vector<vector<int>>::iterator it = adjT.begin(); it != adjT.end(); ++it){
-    (*it).erase((*it).begin() + index);//remove the value at the rmindex for all vectors
-  }
-}
-
 void rmV(vector<vector<int>> & adjT, vector<string> & labels, string & l){
   int exists = 0; //1 if there
   int rmIndex;
@@ -178,11 +181,40 @@ void rmV(vector<vector<int>> & adjT, vector<string> & labels, string & l){
   }
   if(exists == 1){
     rmVLabel(labels, rmIndex);//rm from label list
-    rmVTable(adjT, rmIndex);//rm the index from all the vectors
+    //remove from all vectors
+    for(vector<vector<int>>::iterator it = adjT.begin(); it != adjT.end(); ++it){
+      (*it).erase((*it).begin() + rmIndex);//remove the value at the rmindex for all vectors
+    }
     //clear specific vertex vector
     (*(adjT.begin()+rmIndex)).clear();
     //erase the empty vertec object
     adjT.erase(adjT.begin()+rmIndex);
   }
   return;
+}
+
+void rmE(vector<vector<int>>& adjT, vector<string> labels, string start, string end){
+  //similar process to addE
+    //important ints
+  int indexS;
+  int Sfound = 0;
+  int indexE;
+  int Efound = 0;
+  int count = 0;
+  for(vector<string>::iterator it = labels.begin(); it != labels.end(); ++it){
+    if((*it) == start){
+      indexS = count;
+      Sfound = 1;
+    }
+    else if((*it) == end){
+      indexE = count;
+      Efound = 1;
+    }
+    ++ count;
+  }
+  if(Sfound == 1 && Efound == 1){//can remove edge
+    adjT[indexS][indexE] = -1;//change value in the table
+  }
+  return;
+
 }
