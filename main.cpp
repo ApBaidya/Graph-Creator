@@ -18,8 +18,9 @@ void addE(vector<vector<int>> &, vector<string>, string start, string end, int w
 void rmV(vector<vector<int>> &, vector<string> &, string & l);
 void rmVLabel(vector<string> & labels, int index);
 void rmE(vector<vector<int>>&, vector<string>, string start, string end);
-void findPath();
 void printTable(vector<vector<int>>);//print out that adjacency table
+void findPath(vector<vector<int>> adjTable, vector<string> labels, string start, string end);
+void Dijkstra(vector<vector<int>> adjT, vector<string> labels, vector<string> & visited, vector<string> & unvisited, int* shortestDist, string* previous, string start);
 
 int main(){
   //variable time
@@ -85,7 +86,17 @@ int main(){
 
       cout<<"done"<<endl;
     }
+    //LOOK HERE
     else if(strcmp(input, "f")==0){//FP
+      cout<<"start:"<<endl;
+      cin>>label1;
+      cin.ignore(10, '\n');
+      cin.clear();
+      cout<<"end:"<<endl;
+      cin>>label2;
+      cin.ignore(10, '\n');
+      cin.clear();
+      findPath(adjTable, labels, label1, label2);
       cout<<"done"<<endl;
     }
     else if(strcmp(input, "p")==0){//PT
@@ -101,6 +112,111 @@ int main(){
   return 0;
 }
 
+void findPath(vector<vector<int>> adjT, vector<string> labels, string start, string end){
+  //dijkstra to make that table if labels exist  
+  int indexS;
+  int Sfound = 0;
+  int indexE;
+  int Efound = 0;
+  int count = 0;
+  for(vector<string>::iterator it = labels.begin(); it != labels.end(); ++it){
+    if((*it) == start){
+      indexS = count;
+      Sfound = 1;
+    }
+    else if((*it) == end){
+      indexE = count;
+      Efound = 1;
+    }
+    ++ count;
+  }
+  if(Sfound == 1 && Efound == 1){
+    //vectors for visited and unvisited
+    vector<int> visited;//int bc index and I don't have to keep check labels for index
+    vector<int> unvisited;
+    //the table, besides labels 
+    int shortestDist[count];
+    string previous[count];
+    
+    for(int i = 0; i < count; i++){//just setting up the array
+      shortestDist[i] = 99999;
+      previous[i] = "NONE";
+      unvisited.push_back(i);
+    }//done setting up arrays
+
+    shortestDist[indexS] = 0;//set own distance to 0
+    
+    //ALGORITHM TIME
+    while(!(unvisited.empty())){
+      int current = (*(unvisited.begin()));//current index
+      int sum;//path length
+      for(vector<int>::iterator it = unvisited.begin(); it != unvisited.end(); ++ it){//find which index to visit
+	if(shortestDist[current] > shortestDist[(*it)]){
+	  current = (*it);//get new current index
+	}
+      }
+      //cout<<"current "<<current<<endl;
+
+      //for each unvisited neighbhor of current
+      for(vector<int>::iterator it = unvisited.begin(); it != unvisited.end(); ++it){
+	//cout<<"path length "<<(*((*(adjT.begin()+current)).begin()+(*it)))<<endl;
+	//cout<<"prev length"<<shortestDist[(*it)]<<endl;
+	if((*((*(adjT.begin()+current)).begin()+(*it))) > 0){//if there is a connection on the adj table
+	  int sum1 = 0;
+	  if(shortestDist[current] != 99999){//if this isn't our first time adding
+	    sum1 = shortestDist[current];
+	  }
+	  sum = sum1 + (*((*(adjT.begin()+current)).begin()+(*it)));//add shortest distance to current with the distance for the connection
+	  //cout<<"sum "<<sum<<endl;
+	  if(sum<shortestDist[(*it)]){//if we need to update the path
+	    shortestDist[(*it)] = sum;//update path length
+	    previous[(*it)] = labels[current];//update previous
+	  }
+	}
+      }
+      
+      //remove from unvisited
+      int remIndex = 0;
+      int count2 = 0;
+      for(vector<int>::iterator it = unvisited.begin(); it != unvisited.end(); ++it){
+	if((*it) == current){
+	  remIndex = count2;
+	}
+	++count2;
+      }
+      unvisited.erase(unvisited.begin()+remIndex);
+      //add to visited
+      visited.push_back(current);
+    }//done making table
+    
+    for(int i = 0; i < count; i++){
+      cout<<shortestDist[i];
+    }
+    cout<<endl;
+    for(int i = 0; i < count; i++){
+      cout<<previous[i];
+    }
+    cout<<endl;
+    //find the shortest path now.
+    //string path;
+    int currentIndex = indexE;
+    string currentL = end;
+    int temp = 0;
+    cout<<end;
+    while(currentL != start){
+      cout<<previous[currentIndex];
+      currentL = previous[currentIndex];
+      for(int i = 0; i < count; i++){
+	if((*(labels.begin()+i)) == currentL){
+	  currentIndex = temp;
+	}
+	++temp;
+      }
+    }
+    cout<<endl;
+    cout<<shortestDist[indexE]<<endl;
+  }
+}
 void addV(vector<vector<int>> & adjTable, vector<string> & labels, string & l){
   //push into labels
   labels.push_back(l);
