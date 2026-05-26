@@ -105,6 +105,11 @@ int main(){
     }
     else if(strcmp(input, "q")==0){//QUIT
       running = 0;
+      for(vector<vector<int>>::iterator it = adjTable.begin(); it != adjTable.end(); ++it){
+	(*it).clear();
+      }
+      adjTable.clear();
+      labels.clear();
       cout<<"done"<<endl;
     }
   }//end of main while
