@@ -193,23 +193,28 @@ void findPath(vector<vector<int>> adjT, vector<string> labels, string start, str
       //add to visited
       visited.push_back(current);
     }//done making table
-    
+    /*
     for(int i = 0; i < count; i++){
       cout<<shortestDist[i];
     }
     cout<<endl;
     for(int i = 0; i < count; i++){
       cout<<previous[i];
-    }
+      }*/
     cout<<endl;
     //find the shortest path now.
     //string path;
     int currentIndex = indexE;
     string currentL = end;
     int temp = 0;
-    cout<<end;
+    int plen = 0;
+    //cout<<end;
+    vector<string> path;
+    path.push_back(end);
     while(currentL != start){
-      cout<<previous[currentIndex];
+      path.push_back(previous[currentIndex]);
+      ++ plen;
+      // cout<<"cout"<<previous[currentIndex]<<endl;
       currentL = previous[currentIndex];
       for(int i = 0; i < count; i++){
 	if((*(labels.begin()+i)) == currentL){
@@ -218,6 +223,11 @@ void findPath(vector<vector<int>> adjT, vector<string> labels, string start, str
 	++temp;
       }
     }
+    //cout path
+    for(int i =plen; i >-1; i--){
+      cout<<(*(path.begin()+i));
+    }
+    path.clear();//clear that guy
     cout<<endl;
     cout<<shortestDist[indexE]<<endl;
   }
