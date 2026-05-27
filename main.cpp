@@ -163,19 +163,19 @@ void findPath(vector<vector<int>> adjT, vector<string> labels, string start, str
 	  current = (*it);//get new current index
 	}
       }
-      cout<<"current "<<current<<endl;
+      //cout<<"current "<<current<<endl;
 
       //for each unvisited neighbhor of current
       for(vector<int>::iterator it = unvisited.begin(); it != unvisited.end(); ++it){
-	cout<<"path length "<<(*((*(adjT.begin()+current)).begin()+(*it)))<<endl;
-	cout<<"prev length"<<shortestDist[(*it)]<<endl;
+	//cout<<"path length "<<(*((*(adjT.begin()+current)).begin()+(*it)))<<endl;
+	//cout<<"prev length"<<shortestDist[(*it)]<<endl;
 	if((*((*(adjT.begin()+current)).begin()+(*it))) > 0){//if there is a connection on the adj table
 	  int sum1 = 0;
 	  if(shortestDist[current] != 99999){//if this isn't our first time adding
 	    sum1 = shortestDist[current];
 	  }
 	  sum = sum1 + (*((*(adjT.begin()+current)).begin()+(*it)));//add shortest distance to current with the distance for the connection
-	   cout<<"sum "<<sum<<endl;
+	  // cout<<"sum "<<sum<<endl;
 	  if(sum<shortestDist[(*it)]){//if we need to update the path
 	    shortestDist[(*it)] = sum;//update path length
 	    previous[(*it)] = labels[current];//update previous
@@ -196,6 +196,7 @@ void findPath(vector<vector<int>> adjT, vector<string> labels, string start, str
       //add to visited
       visited.push_back(current);
     }//done making table
+    /*
     for(vector<string>::iterator l = labels.begin(); l != labels.end(); ++l){
       cout<<(*l);
     }
@@ -207,9 +208,9 @@ void findPath(vector<vector<int>> adjT, vector<string> labels, string start, str
     for(int i = 0; i < count; i++){
       cout<<previous[i];
       }
-    cout<<endl;
+      cout<<endl;*/
     //find the shortest path now if connection
-    cout<<previous[indexE]<<endl;
+    //cout<<previous[indexE]<<endl;
     if(previous[indexE]!= "NONE"){//no connection to end
       //string path;
       int currentIndex = indexE;
